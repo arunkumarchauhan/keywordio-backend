@@ -69,7 +69,7 @@
         'name':String,
         'author_name':String,
         'price':Float
-    }
+    }<br/>
     Note :id field is compulsory.For rest of fields No need to pass all the fields only the fields required to update
      
 6.Delete Book
