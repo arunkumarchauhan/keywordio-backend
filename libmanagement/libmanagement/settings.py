@@ -15,6 +15,7 @@ import datetime
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from rest_framework.settings import APISettings, DEFAULTS, IMPORT_STRINGS
 from django.conf import settings
+import os
 USER_SETTINGS = getattr(settings, 'JWT_AUTH', None)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +29,11 @@ SECRET_KEY = 'django-insecure-o7ddniu(d^h$(up(bc)d$s$#tmuu-bt%co=92t+0#*w#%!ahaq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CORS_ORIGIN_ALLOW_ALL=True
 ALLOWED_HOSTS = ['*']
+
+
+
 AUTH_USER_MODEL = 'api.User'
 
 # Application definition
@@ -40,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     'api',
@@ -50,10 +56,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'libmanagement.urls'
@@ -61,7 +69,7 @@ ROOT_URLCONF = 'libmanagement.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -167,3 +175,8 @@ JWT_AUTH = {
 }
 
 api_settings = APISettings(USER_SETTINGS, DEFAULTS, IMPORT_STRINGS)
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')

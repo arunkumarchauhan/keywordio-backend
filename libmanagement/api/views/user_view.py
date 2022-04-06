@@ -31,14 +31,14 @@ class RegisterView(APIView):
         try:
             is_staff= True if type.upper()=="ADMIN" else False
             serializer = UserCreateSerializer(data={'is_staff':is_staff,**request.data})
-
-            if not serializer.is_valid():
+            if not serializer.is_valid( ):
                 return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
             user = serializer.save()
             refresh = RefreshToken.for_user(user)
             res = {
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
+                'isAdmin':user.is_staff
             }
             return response.Response(res, status.HTTP_201_CREATED)
         except Exception as e:
@@ -59,6 +59,7 @@ class LoginView(APIView):
                 logger.exception(e)
                 return Response({'error': 'Required data not provided'}, status=status.HTTP_400_BAD_REQUEST)
             user_list = User.objects.filter(email=email)
+
             if len(user_list) == 0:
                 return Response({'error': 'Account with this email is not registered '},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -72,6 +73,7 @@ class LoginView(APIView):
             response_data = {
                 'message': 'User logged in successfully',
                 'token': jwt_token,
+                'isAdmin':user.is_staff
             }
 
             return Response(response_data, status=status.HTTP_200_OK)

@@ -3,12 +3,11 @@ from rest_framework.views import APIView
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 import logging
 from api.models import Book
-from api.serializers import BookSerializer
+from api.serializers import BookSerializer, GetBookSerializer
 
 logger = logging.getLogger('django')
 from rest_framework import response,status
 from rest_framework.response import Response
-
 
 
 
@@ -65,14 +64,14 @@ class AdminBookView(APIView):
 
 
 class GetBookView(APIView):
-    permission_classes = [IsAdminUser,IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     authentication_class = [JSONWebTokenAuthentication]
 
     def get(self,request):
         try:
 
             book_data=Book.objects.all()
-            serializer = BookSerializer(book_data,many=True)
+            serializer = GetBookSerializer(book_data,many=True)
             return response.Response(data={'data':serializer.data}, status=status.HTTP_200_OK)
         except Exception as e:
             logger.exception(e)
